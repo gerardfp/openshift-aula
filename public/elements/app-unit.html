@@ -1,0 +1,425 @@
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="/bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="/bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="/bower_components/iron-icons/image-icons.html">
+<link rel="import" href="/elements/span-editable.html">
+<link rel="import" href="/elements/div-editable.html">
+
+<dom-module id="app-unit">
+  <style>    
+      :host {
+        display: inline-block;
+        margin: 4px;
+        margin-bottom: 8px;
+        padding: 0px;
+      }
+      
+      :host.selected paper-ripple {
+        background-color: rgba(18,32,232,0.5);
+      } 
+            
+      #imagen {
+        margin: 0px;
+        height: 200px;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+      }
+      
+      #imagen img {
+        width:50%;
+      }
+      
+      #unitToolbar, 
+      #childsToolbar, 
+      #childs, 
+      #editicono, 
+      #editcolor {
+        display: none;
+      }
+      
+      #titulo {
+        font-weight: bold;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      #descripcion, 
+      #titulo {
+        padding: 8px;
+        display: block;
+      }
+      
+      #categoriaToolbar {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        padding: 8px;
+        border-radius: 2px;
+      }
+      
+      #categoria {
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+      
+      #icono {
+        position: relative;
+        top: -0.2rem;  
+      }
+      
+      #editicono, 
+      #editcolor, 
+      #categoria {
+        margin-right: 0.5rem;
+        margin-left: 0.5rem 
+      }
+      
+      #editicono {
+        margin-left: 1rem;
+      }
+      
+      paper-material {
+        padding: 0px;
+        border-radius: 2px;
+        background: #FFF;
+      }
+      
+      @media (min-width: 1280px){
+        :host {
+          display: inline-block;
+          width: 23.5%;
+        }
+      }
+      
+      @media (max-width: 1280px){
+        :host {
+          display: inline-block;
+          width: 32%;
+        }
+      }
+      
+      @media (max-width: 960px){
+        :host {
+          display: inline-block;
+          width: 48%;
+        }
+      }
+      
+      @media (max-width: 600px){
+        :host {
+          display: block;
+          width: auto;
+        }
+      }
+        
+      :host.viewfull {
+        display: block;
+        width: 100%;
+        margin: 32px 0px 32px 0px;
+      }  
+      
+      :host.viewfull #cardbutton,
+      :host.viewfull #imagen {
+        display:none;
+      }
+              
+      :host.viewfull #categoriaToolbar {
+        position: static;
+        padding: 8px; 
+      };
+      
+      :host.viewfull #unitToolbar {
+        display: block;
+        position: absolute;
+        top: 8px;
+        right: 8px;
+      }
+      
+      :host.viewfull #titulo {
+        font-size: 1.4rem;
+        font-weight: bold;
+      };
+
+      :host.viewfull #descripcion, :host.viewfull #childs, :host.viewfull #titulo {
+        padding: 16px;
+      }
+      
+      :host.viewfull #childs {
+        display: block;
+        padding-bottom: 64px;
+      }
+
+      :host.viewfull #childsToolbar paper-fab {
+        background-color: #FAFAFA;
+        color: #0A0A0A;
+        margin-right: 16px;
+        margin-left: 8px;
+      }
+      
+      :host.viewfull paper-material {
+        padding: 16px;
+      }
+      
+
+      
+      :host.viewlist {
+        display: block;
+        width: 100%;
+        margin: 1px 0px 1px 0px;
+      } 
+      
+      :host.viewlist #cardbutton,
+      :host.viewlist #imagen {
+        display:none;
+      }
+            
+      :host.viewlist #unitToolbar {
+        display: block;
+        position: absolute;
+        top: 0px;
+        right: 8px;
+      }
+      
+      :host.viewlist #categoriaToolbar {
+        position: static;
+        display: inline;
+      }
+      
+      :host.viewlist #editicono, :host.viewlist #editcolor, :host.viewlist #categoria {
+        position: static; 
+      }
+      
+      :host.viewlist #titulo {
+        position: static;
+        display: inline-block;
+      }
+      
+      :host.viewlist #descripcion {
+        position: static;
+        display: inline-block;
+      }
+      
+      :host.viewedit #childsToolbar {
+        display: block;
+        padding: 8px;
+      }
+      
+      :host.viewedit #editicono, :host.viewedit #editcolor  {
+        display: inline;
+      }
+      
+      :host.viewedit #icono  {
+        opacity: 0.4;
+      }
+
+  </style>
+  <template>
+    <paper-material id="unit">
+      <paper-ripple id="cardbutton"></paper-ripple>
+      <span id="categoriaToolbar" style$="{{join('color: white; background-color:', color)}}">
+        <!--<span id="icono"><paper-fab icon="{{data.icono}}" style$="{{join('background-color:', data.color)}}" mini></paper-fab></span>-->
+        <span id="icono"><iron-icon icon="{{icono}}"></iron-icon></span>
+        <span id="editicono"><iron-icon icon="{{icono}}"></iron-icon><span-editable>{{icono}}</span-editable></span>
+        <span id="editcolor"><iron-icon icon="image:palette"></iron-icon><span-editable>{{color}}</span-editable></span>
+        <span-editable id="categoria">{{categoria}}</span-editable>
+      </span>
+      <span id="unitToolbar">
+        <paper-icon-button id="viewcard" icon="view-module" mini tool></paper-icon-button>
+        <paper-icon-button id="viewlist" icon="list" mini tool></paper-icon-button>
+        <paper-icon-button id="viewedit" icon="editor:mode-edit" mini tool></paper-icon-button>
+      </span>
+      <div id="imagen" style$="{{join('background: url(', imagen, ')')}}"></div>
+      <div is="div-editable" id="titulo" contenido="{{titulo}}"></div>
+      <div is="div-editable" id="descripcion" contenido="{{descripcion}}"></div>
+      <div id="childs">
+        <template is="dom-repeat" items="{{childs}}">
+          <template is="dom-if" if="{{item.src}}">
+            <app-unit src="{{item.src}}"></app-unit>
+          </template>
+          <template is="dom-if" if="{{item.data}}">
+            <app-unit data="{{item.data}}"></app-unit>
+          </template> 
+          <template is="dom-if" if="{{!item.src}}">
+            <template is="dom-if" if="{{!item.data}}">
+              <div is="div-editable" id="{{join('childs.',index)}}" contenido="{{item}}"></div>
+            </template>
+          </template>
+        </template>
+      </div>
+      <div id="childsToolbar">
+        <paper-icon-button id="addContent" icon="add" mini tool></paper-icon-button>
+        <paper-icon-button id="addTask" icon="check" mini tool></paper-icon-button>
+        <paper-icon-button id="addUnit" icon="bookmark" mini tool></paper-icon-button>
+      </div>  
+    </paper-material>
+  </template>
+
+  <script>
+    Polymer({
+      is: "app-unit",
+      ready: function() {
+        var self = this;
+        if(self.src){
+          request({
+            url: self.src,
+            success: function(res){
+              Object.keys(res).forEach(function(key){
+                self[key] = res[key];
+                self.src = /unit/ + res._id;
+              });
+            }
+          });
+        }
+        this.toggleClass("viewcard", true);
+      },
+      properties: {
+        src:          { type: String, notify: true },
+        categoria:    { type: String, notify: true },
+        icono:        { type: String, notify: true },
+        color:        { type: String, notify: true },
+        titulo:       { type: String, notify: true },
+        descripcion:  { type: String, notify: true },
+        childs:    { type: Array, notify: true, value: function(){ return ["kk"];} },
+      },
+      join: function(){
+        return Array.prototype.join.call(arguments, '');    
+      },
+      listeners: {
+        'tap': 'onTap',
+        'cardbutton.down': 'onDownCardbutton',
+        'cardbutton.up': 'onUpCardbutton',
+        'cardbutton.tap': 'onTapCardbutton',
+        'icono.tap': 'onTapIcono',
+        'viewcard.tap': 'onTapViewcard',
+        'viewlist.tap': 'onTapViewlist',
+        'viewedit.tap': 'onTapViewedit',
+        'cardbutton.track': 'onTrackCardbutton',
+        'addContent.tap': 'onTapAddContent',
+        'addTask.tap': 'onTapAddTask',
+        'addUnit.tap': 'onTapAddUnit',
+        'titulo.mutation': 'onMutation',
+        'descripcion.mutation': 'onMutation',
+        'childs.mutation': 'onMutation',
+      },
+      onTapAddContent: function(){
+        this.push("childs","new contenttt");
+      },
+      onTapAddTask: function(){
+        
+      },
+      onTapAddUnit: function(){
+        
+      },
+      onMutation: function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        console.log("savecall",e);
+        save({ src: this.src, path: e.srcElement.id, value: e.srcElement.innerHTML });
+      },
+      onTap: function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+      },
+      onDownCardbutton: function(){
+        this.lastDown = Date.now();
+      },
+      onUpCardbutton: function(){
+        var delay = Date.now() - this.lastDown;
+        if(delay>300){
+          this.isOnHold = true;
+          this.toggleClass("selected",true);
+        }else{
+          this.isOnHold = false;
+        }
+        document.getElementsByTagName("body")[0].style.cursor = "auto";
+        this.cancelTrack = true;
+      },
+      onTapCardbutton: function(){
+        if(!this.isOnHold){
+          if(this.classList.contains("viewcard")){
+            if(this.classList.contains("selected")){
+              this.toggleClass("selected",false);
+            }else{
+              this.toggleClass("viewfull",true);
+              this.toggleClass("viewcard",false);
+              this.toggleClass("viewlist",false);  
+            }
+          }
+        }
+      },
+      onTapViewcard: function(){
+        console.log("onTapViewcard", this.classList);
+        this.toggleClass("viewfull",false);
+        this.toggleClass("viewcard",true);
+        this.toggleClass("viewlist",false);
+        this.toggleClass("viewedit",false);
+      },
+      onTapViewlist: function(){
+        console.log("onTapViewlist", this.classList);
+        this.toggleClass("viewfull",false);
+        this.toggleClass("viewcard",false);
+        this.toggleClass("viewlist",true);
+        this.toggleClass("viewedit",false);
+      },
+      onTapViewedit: function(){
+        console.log("onTapViewedit", this.classList);
+        this.toggleClass("viewfull",true);
+        this.toggleClass("viewcard",false);
+        this.toggleClass("viewlist",false);
+        this.toggleClass("viewedit",true);
+      },
+      onTrackCardbutton: function(e){
+        if(this.cancelTrack)
+          this.cancelTrack = false;
+        else
+          document.getElementsByTagName("body")[0].style.cursor = "url('http://wiki-devel.sugarlabs.org/images/e/e2/Arrow.cur'), auto";
+        console.log("TRACKKEDDD",e);
+      },
+      onInputEditicon: function(){
+        this.icono = this.$.chip.querySelector("#editicon").get().textContent.replace(/^\s+|\s+$/g,'');
+      },
+      onFocusoutEditicon: function(){
+        this.editingChip="false"; 
+      },
+      onInputEditcolor: function(){
+        var color = this.$.chip.querySelector("#editcolor").get().textContent.replace(/^\s+|\s+$/g,'');
+        if(color.length == 7){
+          this.color = color;
+        }
+      },
+      onTapCheck: function(){
+        console.log("CLICKEDD CHECK");
+        var self=this;
+        request({
+          method: "POST",
+          url: "/unit/create",
+          data: { titulo: 'untitleddd', descripcion: "undescriptedddd", categoria: "uncategorized", icono: "bookmark", color: "#d23f31",  childs: ["cont<b>enid</b>o1","cont<i>enid</i>o2","cont<u>eni</u>do3"] },
+          success: function(result){
+            console.log(result);
+            var newid=result;
+            self.push("data.childs", {
+              src: "/unit/" + newid
+            });
+          }
+        });        
+      },
+      onClickBookmark: function(){
+        this.push("data.childs", { 
+          data: {
+            imagen: '../images/4.jpg',
+            titulo: "titulo",
+            descripcion: "descripcion de la entidad",
+            childs: ["http://wikipedia.org/" + Math.random()],
+            categoria: "categoria",
+            icono: "bookmark"
+          }
+        });
+      },
+    });
+  </script>
+</dom-module>

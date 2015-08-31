@@ -1,0 +1,22 @@
+<dom-module id="span-editable">
+  <template>
+    <span id="contenido" contenteditable="true" on-change="onChange"><content></content></span>
+  </template>
+  <script>
+    Polymer({
+      is: "span-editable",
+      readyyy: function(){
+        var self=this;
+        var events = ['input','focus','blur'];
+        events.forEach(function(event){
+          self.$.contenido.addEventListener(event,function(){
+            self.fire(event, {});
+          }); 
+        });
+      },
+      onChange: function(){
+        console.log("CHANGEEE",this);
+      }
+    });
+  </script>
+</dom-module>

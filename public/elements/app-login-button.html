@@ -1,0 +1,64 @@
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+
+<dom-module id="app-login-button">
+  <template>
+    <paper-icon-button id="login" label="" icon="account-circle" tool>{{email}}</paper-icon-button>
+  </template>
+  <script>
+    Polymer({
+      is: "app-login-button",
+      properties: {
+        email: String,
+      },
+      ready: function(){
+        var self = this;
+        navigator.id.watch({
+          onlogin: function(assertion) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/persona/verify", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.addEventListener("loadend", function(e) {
+              var data = JSON.parse(this.responseText);
+              if (data && data.status === "okay") {
+                navigator.id.email = data.email;
+                console.log("You have been logged in as: " + navigator.id.email);
+              }
+            }, false);
+
+            xhr.send(JSON.stringify({ assertion: assertion }));
+          },
+          onlogout: function() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/persona/logout", true);
+            xhr.addEventListener("loadend", function(e) {
+                console.log("You have been logged out as " + navigator.id.email);
+                navigator.id.email="";
+            });
+            xhr.send();
+          }
+        });
+      },
+      idAction: function() { navigator.id.request(); },
+      listeners: {
+        'tap': 'tap',
+      },
+      tap: function(e) {
+        console.log(this.idAction);
+        this.idAction();
+      },
+      observe: {
+        'navigator.id.email': function(oldValue, newValue){
+          console.log("changedd email");
+          if(newValue == ""){
+            this.$.login.icon="account-circle"; 
+            this.idAction = function(){ navigator.id.request(); };
+          }else{
+            this.$.login.icon="exit-to-app"; 
+            this.idAction = function(){ navigator.id.logout(); };
+          }
+          this.email = newValue;
+        }
+      }
+    });
+  </script>
+</polymer-element>

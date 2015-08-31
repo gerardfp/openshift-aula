@@ -1,0 +1,42 @@
+<link rel="import" href="/elements/app-unit.html">
+
+<dom-module id="app-body">
+  <template>
+    <div id="body">
+      <template is="dom-repeat" items="{{units}}">
+        <app-unit src="{{item.src}}"></app-unit>
+      </template>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: "app-body",
+      properties: {
+        units: {
+          type: Array,
+          value: [],
+          notify: true
+        }
+      },
+      ready: function(){
+        var self=this;
+        request({
+          url: "/unit/all",
+          success: function(res){
+            res.forEach(function(unit){
+              console.log("RESPONSE",unit);
+              unit.src = "/unit/" + unit._id;
+              self.push("units", unit);              
+            });
+          }
+        });
+      },
+      listeners: {
+        'body.tap': 'onTapBody'  
+      },
+      onTapBody: function(){
+        console.log("TAPPPED BODYDYYY");
+      }
+    });
+  </script>
+</dom-module>

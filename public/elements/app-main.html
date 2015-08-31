@@ -1,0 +1,36 @@
+<link rel="import" href="/elements/app-toolbar.html">
+<link rel="import" href="/elements/app-body.html">
+
+<dom-module id="app-main">
+  <template>
+    <app-toolbar id="app-toolbar" on-tap="onTapToolbar"></app-toolbar>
+    <app-body id="appbody"></app-body>
+  </template>
+  
+  <script>
+    Polymer({
+      is: "app-main",
+      onTapToolbar: function (e) {
+        if(e.buttonId = "create"){
+          this.addUnit();
+        }
+        console.log("TAPPPPEDD",e);
+      },
+      addUnit: function(){
+        var self=this;
+        request({
+          method: "POST",
+          url: "/unit/create",
+          data: {  imagen: '../images/1.jpg', titulo: 'untitleddd', descripcion: "undescriptedddd", categoria: "uncategorized", icono: "bookmark", color: "#d23f31" },
+          success: function(result){
+            console.log(result);
+            var newid=result;
+            self.$.appbody.push('units', {
+              src: "/unit/" + newid
+            });
+          }
+        });     
+      }
+    });
+  </script>
+</dom-module>

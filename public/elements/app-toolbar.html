@@ -1,0 +1,30 @@
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/elements/app-login-button.html">
+
+<dom-module id="app-toolbar">
+  <template>
+    <paper-toolbar class="small">
+      <paper-icon-button icon="menu"></paper-icon-button>
+      <span title class="flex">MyApp</span>
+      <paper-icon-button id="search" icon="search"></paper-icon-button>
+      <!--<paper-icon-button icon="more-vert"></paper-icon-button>
+      <paper-icon-button id="entidades" icon="assignment" tool></paper-icon-button>
+      <paper-icon-button id="studies" icon="class" tool></paper-icon-button>
+      <paper-icon-button id="assessment" icon="assessment" tool></paper-icon-button>-->
+      <paper-icon-button id="create" icon="create" tool></paper-icon-button>
+      <app-login-button tool></app-login-button>
+    </paper-toolbar>    
+  </template>
+  
+  <script>
+    Polymer({
+      is: "app-toolbar",
+      listeners:{
+        'tap': 'onTap'
+      },
+      onTap: function(e){
+        e.buttonId = e.path[1].id; 
+      }
+    });
+  </script>
+</dom-module>

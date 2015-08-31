@@ -1,0 +1,30 @@
+<dom-module id="div-editable">
+  <template>
+  </template>
+  <script>
+    Polymer({
+      is: "div-editable",
+      extends: "div",
+      properties: {
+        contenido: { type: String, notify: true },
+      },
+      ready: function(){
+        var self=this;
+        this.toggleAttribute("contenteditable", true);
+        this.innerHTML = this.contenido; 
+        this.addEventListener("contenido-changed", function(){
+          self.innerHTML = this.contenido;
+        });
+        
+        //['input','focus','blur'].forEach(function(event){self.addEventListener(event,function(){self.fire(event,{});});});
+        
+        //var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+        new MutationObserver(function(mutations) {  
+          mutations.forEach(function(mutation) {
+            self.fire("mutation");
+          });
+        }).observe(this, { childList: true, subtree: true, characterData: true });
+      },
+    });
+  </script>
+</dom-module>
