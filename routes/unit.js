@@ -2,7 +2,13 @@ var express = require('express');
 var router = express.Router();
 //var db = require('mongoskin').db('localhost:27017/apprenent');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test');
+var mongohost = process.env.OPENSHIFT_MONGODB_DB_HOST || 'localhost';
+var mongoport = process.env.OPENSHIFT_MONGODB_DB_PORT || 27017;
+
+var mongoconurl = 'mongodb://' + mongohost + ':' + mongoport + '/test'; 
+console.log("MONGOHOSTPORT",mongoconurl);
+
+mongoose.connect('mongodb://' + mongohost + ':' + mongoport + '/test');
 
 
 var Unit = mongoose.model('unit', { 
